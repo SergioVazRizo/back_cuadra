@@ -21,7 +21,23 @@ public class SaludService {
 
     public SaludDTO obtenerInformacionSaludPorIdUsuario(Long idUsuario) {
         Usuario usuario = usuarioService.obtenerUsuarioPorId(idUsuario);
-        return saludRepository.findByUsuarioId(usuario);
+        
+        if (usuario == null) {
+            return null;
+        }
+        
+        // Calcular IMC, peso ideal y presión arterial ideal
+        double imc = calcularIMC(usuario.getPesoActual(), usuario.getAltura());
+        double pesoIdeal = calcularPesoIdeal(usuario.getSexo(), usuario.getAltura());
+        String presionArterialIdeal = calcularPresionArterialIdeal(usuario.getEdad());
+
+        // Crear objeto SaludDTO con la información calculada
+        SaludDTO saludDTO = new SaludDTO();
+        saludDTO.setImc(imc);
+        saludDTO.setPesoIdeal(pesoIdeal);
+        saludDTO.setPresionArterialIdeal(presionArterialIdeal);
+
+        return saludDTO;
     }
     
     public double calcularIMC(double pesoKg, double alturaCm) {

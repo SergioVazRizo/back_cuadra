@@ -24,6 +24,7 @@ public class Usuario {
     private String nombreCompleto;
     private LocalDate fechaNacimiento;
     private String sexo;
+    private int edad;
     private Double pesoActual;
     private Double altura;
 
@@ -74,6 +75,14 @@ public class Usuario {
 
     public String getSexo() {
         return sexo;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+
+    public int getEdad() {
+        return edad;
     }
 
     public void setSexo(String sexo) {

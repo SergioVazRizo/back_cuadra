@@ -37,7 +37,7 @@ public class UsuarioService {
     @Transactional
     public Usuario registrarUsuario(Usuario usuario) {
         usuario.getDispositivo().setClaveUnica(UUID.randomUUID().toString());
-        usuario.getDispositivo().setActivo(true); // Establecer el dispositivo como activo por defecto
+        usuario.getDispositivo().setActivo(true); 
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
         return nuevoUsuario;
     }

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cuadra.cuadra.model.SaludDTO;
 import com.cuadra.cuadra.service.SaludService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -20,10 +22,15 @@ public class SaludController {
     private SaludService saludService;
 
     @GetMapping("/salud/{idUsuario}")
-    public ResponseEntity<SaludDTO> obtenerInformacionSaludPorIdUsuario(@PathVariable Long idUsuario) {
-        SaludDTO informacionSalud = saludService.obtenerInformacionSaludPorIdUsuario(idUsuario);
+    public ResponseEntity<Map<String, Object>> obtenerInformacionSaludPorIdUsuario(@PathVariable Long idUsuario) {
+        var informacionSalud = saludService.obtenerInformacionSaludPorIdUsuario(idUsuario);
+
         if (informacionSalud != null) {
-            return ResponseEntity.ok(informacionSalud);
+            Map<String, Object> response = new HashMap<>();
+            response.put("imc", informacionSalud.getImc());
+            response.put("pesoIdeal", informacionSalud.getPesoIdeal());
+            response.put("presionArterialIdeal", informacionSalud.getPresionArterialIdeal());
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }

@@ -119,8 +119,8 @@ public class UsuarioController {
         }
     }
 
-    // 8. Calcular IMC (requiere autenticación y autorización)
-    @GetMapping("/{id}/salud")
+    // 8. Calcular IMC 
+    @GetMapping("/{id}/imc")
     public ResponseEntity<Double> calcularIMC(@PathVariable Long id) {
         try {
             Usuario usuario = usuarioService.obtenerUsuarioPorId(id);
