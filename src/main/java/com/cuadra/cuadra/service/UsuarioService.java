@@ -50,7 +50,6 @@ public class UsuarioService {
         // Generar clave única y configurar el dispositivo
         usuario.getDispositivo().setClaveUnica(UUID.randomUUID().toString());
         usuario.getDispositivo().setActivo(true); 
-        usuario.getDispositivo().setActivo(true);
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
         return nuevoUsuario;
     }
@@ -92,6 +91,7 @@ public class UsuarioService {
             throw new Exception("Usuario no encontrado."); 
         }
     }
+
 
     // 3. Obtener todos los usuarios (para administradores)
     public List<Usuario> obtenerTodosLosUsuarios() {
@@ -150,7 +150,7 @@ public class UsuarioService {
 
         double imc = saludService.calcularIMC(usuario.getPesoActual(), usuario.getAltura());
         double pesoIdeal = saludService.calcularPesoIdeal(usuario.getSexo(), usuario.getAltura());
-        String presionArterialIdeal = saludService.calcularPresionArterialIdeal(calcularEdad(usuario.getFechaNacimiento()));
+        String presionArterialIdeal = saludService.calcularPresionArterialIdeal(usuario.getEdad());
 
         com.cuadra.cuadra.model.SaludDTO saludDTO = new com.cuadra.cuadra.model.SaludDTO();
         saludDTO.setImc(imc);
@@ -160,11 +160,12 @@ public class UsuarioService {
         return saludDTO;
     }
 
-    // Método auxiliar para calcular la edad a partir de la fecha de nacimiento
-    private int calcularEdad(LocalDate fechaNacimiento) {
-        if (fechaNacimiento == null) {
-            return 0; // Manejar el caso donde la fecha de nacimiento es nula
+    public Usuario obtenerUsuarioPorNombreUsuario(String nombreUsuario) throws Exception {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByNombreUsuario(nombreUsuario);
+        if (usuarioOptional.isPresent()) {
+            return usuarioOptional.get();
+        } else {
+            throw new Exception("Usuario no encontrado."); 
         }
-        return Period.between(fechaNacimiento, LocalDate.now()).getYears();
     }
 }
