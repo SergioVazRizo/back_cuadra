@@ -44,15 +44,14 @@ public class UsuarioController {
         }
     }
 
-    // 2. Autenticar Usuario (modificado para recibir clave única)
+    // 2. Autenticar Usuario
     @PostMapping("/login")
     public ResponseEntity<Usuario> autenticarUsuario(
             @RequestParam String nombreUsuario, 
-            @RequestParam String contrasena,
-            @RequestParam String claveUnica) { 
+            @RequestParam String contrasena) { 
 
         try {
-            Usuario usuarioAutenticado = usuarioService.autenticarUsuario(nombreUsuario, contrasena, claveUnica);
+            Usuario usuarioAutenticado = usuarioService.autenticarUsuario(nombreUsuario, contrasena);
             if (usuarioAutenticado != null) {
                 return new ResponseEntity<>(usuarioAutenticado, HttpStatus.OK);
             } else {
@@ -64,7 +63,7 @@ public class UsuarioController {
     }
 
 
-    // 3. Obtener todos los usuarios (solo para administradores - requiere autenticación y autorización)
+    // 3. Obtener todos los usuarios
     @GetMapping
     public ResponseEntity<List<Usuario>> obtenerTodosLosUsuarios() {
         try {
@@ -75,7 +74,7 @@ public class UsuarioController {
         }
     }
 
-    // 4. Obtener usuario por ID (requiere autenticación y autorización)
+    // 4. Obtener usuario por ID
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
         try {
@@ -86,7 +85,7 @@ public class UsuarioController {
         }
     }
 
-    // 5. Actualizar usuario (requiere autenticación y autorización)
+    // 5. Actualizar usuario 
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody @Valid Usuario usuarioActualizado) {
         try {
@@ -97,7 +96,7 @@ public class UsuarioController {
         }
     }
 
-    // 6. Desactivar usuario (solo para administradores - requiere autenticación y autorización)
+    // 6. Desactivar usuario 
     @PutMapping("/{id}/desactivar")
     public ResponseEntity<Void> desactivarUsuario(@PathVariable Long id) {
         try {

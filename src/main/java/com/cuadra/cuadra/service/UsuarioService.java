@@ -6,6 +6,7 @@ import java.time.Period;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,39 @@ public class UsuarioService {
     // 1. Registrar Usuario
     @Transactional
     public Usuario registrarUsuario(Usuario usuario) {
+        // Verificar si se proporcionó un IMEI
+        if (usuario.getDispositivo().getImei() == null || usuario.getDispositivo().getImei().isEmpty()) {
+            // Generar un IMEI ficticio si no se proporciona
+            usuario.getDispositivo().setImei(generarImeiFicticio());
+        } else {
+            // Validar el IMEI proporcionado
+            if (!esImeiValido(usuario.getDispositivo().getImei())) {
+                throw new IllegalArgumentException("El IMEI proporcionado no es válido.");
+            }
+        }
+        // Generar clave única y configurar el dispositivo
         usuario.getDispositivo().setClaveUnica(UUID.randomUUID().toString());
         usuario.getDispositivo().setActivo(true); 
+        usuario.getDispositivo().setActivo(true);
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
         return nuevoUsuario;
     }
 
+    private String generarImeiFicticio() {
+        Random random = new Random();
+        StringBuilder imeiBuilder = new StringBuilder();
+        for (int i = 0; i < 15; i++) {
+            imeiBuilder.append(random.nextInt(10)); // Agregar un dígito aleatorio entre 0 y 9
+        }
+        return imeiBuilder.toString();
+    }
+    private boolean esImeiValido(String imei) {
+        return imei.matches("\\d{15}"); // Validación simple: 15 dígitos numéricos.
+    }
+
     // 2. Autenticar Usuario (con validación de clave única y actualización de último acceso)
     @Transactional
-    public Usuario autenticarUsuario(String nombreUsuario, String contrasena, String claveUnica) throws Exception {
+    public Usuario autenticarUsuario(String nombreUsuario, String contrasena) throws Exception {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByNombreUsuario(nombreUsuario);
 
         if (usuarioOptional.isPresent()) {
@@ -52,7 +77,6 @@ public class UsuarioService {
             Dispositivo dispositivo = usuario.getDispositivo();
 
             if (contrasena.equals(usuario.getContrasena()) && 
-                claveUnica.equals(dispositivo.getClaveUnica()) &&
                 dispositivo.isActivo()) { 
 
                 // Actualizar último acceso y tiempo activo
