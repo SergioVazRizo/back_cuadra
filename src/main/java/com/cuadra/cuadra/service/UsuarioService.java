@@ -40,7 +40,7 @@ public class UsuarioService {
         // Verificar si se proporcionó un IMEI
         if (usuario.getDispositivo().getImei() == null || usuario.getDispositivo().getImei().isEmpty()) {
             // Generar un IMEI ficticio si no se proporciona
-            usuario.getDispositivo().setImei(generarImeiFicticio());
+            /* usuario.getDispositivo(.setImei(generarImeiFicticio());*/
         } else {
             // Validar el IMEI proporcionado
             if (!esImeiValido(usuario.getDispositivo().getImei())) {
